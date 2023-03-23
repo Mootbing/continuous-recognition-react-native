@@ -43,8 +43,8 @@ export default App = () => {
     pushStream.write(pcmData);
   });
 
-  const speechTranslationConfig = SpeechTranslationConfig.fromSubscription("6c1f18d17acb4e4d84c4dc228d560c3b", "YourServiceRegion");
-  speechTranslationConfig.speechRecognitionLanguage = "en-US";
+  const speechTranslationConfig = SpeechTranslationConfig.fromSubscription("--key--", "region");
+  speechTranslationConfig.speechRecognitionLanguage = "zh-CN";
   speechTranslationConfig.addTargetLanguage("en");
   const audioConfig = AudioConfig.fromStreamInput(
     pushStream,
@@ -54,9 +54,16 @@ export default App = () => {
 
   translationRecognizer.recognizing = (s, e) => {
     console.log(`RECOGNIZING: Text=${e.result.text}`);
+    console.log(`RECOGNIZING: Text=${e.result.translations.get("en")}`);
   };
 
-  translationRecognizer.startContinuousRecognitionAsync();
+  translationRecognizer.startContinuousRecognitionAsync(() => {
+    console.log("Translation recognizer started");
+  }, 
+    (err) => {
+      console.log(err);
+    }
+  );
 
   return <SafeAreaView style={{flexGrow: 1, justifyContent: "center", alignItems: "center"}}>
     
