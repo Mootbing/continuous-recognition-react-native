@@ -1,3 +1,4 @@
+
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -22,9 +23,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import 'react-native-get-random-values';
 import 'node-libs-react-native/globals';
-import { AudioConfig, AudioInputStream, AudioStreamFormat, CancellationDetails, CancellationReason, NoMatchDetails, NoMatchReason, ResultReason, SpeechConfig, SpeechRecognizer } from 'microsoft-cognitiveservices-speech-sdk';
-import DocumentPicker from 'react-native-document-picker';
-import RNFS from 'react-native-fs';
+import { AudioConfig, AudioInputStream, AudioStreamFormat, CancellationDetails, CancellationReason, NoMatchDetails, NoMatchReason, ResultReason, SpeechConfig, SpeechRecognizer, SpeechTranslationConfig, TranslationRecognizer } from 'microsoft-cognitiveservices-speech-sdk';
 
 import LiveAudioStream from 'react-native-live-audio-stream';
 
@@ -44,19 +43,20 @@ export default App = () => {
     pushStream.write(pcmData);
   });
 
-  const speechConfig = SpeechConfig.fromSubscription("--KEY--", "eastus");
-  speechConfig.speechRecognitionLanguage = "en-US";
+  const speechTranslationConfig = SpeechTranslationConfig.fromSubscription("6c1f18d17acb4e4d84c4dc228d560c3b", "YourServiceRegion");
+  speechTranslationConfig.speechRecognitionLanguage = "en-US";
+  speechTranslationConfig.addTargetLanguage("en");
   const audioConfig = AudioConfig.fromStreamInput(
     pushStream,
     AudioStreamFormat.getWaveFormatPCM(16000, 16, 1)
   );
-  const recognizer = new SpeechRecognizer(speechConfig, audioConfig);
+  const translationRecognizer = new TranslationRecognizer(speechTranslationConfig, audioConfig);
 
-  recognizer.recognizing = (s, e) => {
+  translationRecognizer.recognizing = (s, e) => {
     console.log(`RECOGNIZING: Text=${e.result.text}`);
   };
 
-  recognizer.startContinuousRecognitionAsync();
+  translationRecognizer.startContinuousRecognitionAsync();
 
   return <SafeAreaView style={{flexGrow: 1, justifyContent: "center", alignItems: "center"}}>
     
